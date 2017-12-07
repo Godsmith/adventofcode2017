@@ -1,4 +1,7 @@
-from day7 import bottom_program
+import pytest
+
+from day7 import bottom_program, ProgramParser, faulty_program, \
+    correct_weight_of_faulty_program
 
 INPUT = """pbga (66)
 xhth (57)
@@ -15,6 +18,19 @@ gyxo (61)
 cntj (57)"""
 
 
-def test_bottom_program():
+@pytest.fixture
+def programs():
     input_rows = INPUT.split('\n')
-    assert bottom_program(input_rows).name == 'tknk'
+    return ProgramParser.create_programs(input_rows)
+
+
+def test_bottom_program(programs):
+    assert bottom_program(programs).name == 'tknk'
+
+
+def test_faulty_program(programs):
+    assert faulty_program(programs).name == 'ugml'
+
+
+def test_correct_weight_of_faulty_program(programs):
+    assert correct_weight_of_faulty_program(programs) == 60
