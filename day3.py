@@ -1,22 +1,18 @@
-from enum import Enum
 from itertools import product
 
-
-class Direction(Enum):
-    RIGHT = 1
-    UP = 2
-    LEFT = 3
-    DOWN = 4
+RIGHT = 1
+UP = 2
+LEFT = 3
+DOWN = 4
 
 
 class Step:
-    def __init__(self, direction):
-        right, up, left, down = Direction.RIGHT, Direction.UP, \
-                                Direction.LEFT, Direction.DOWN
-        self.direction = direction
-        self._x = {right: 1, up: 0, left: -1, down: 0}
-        self._y = {right: 0, up: -1, left: 0, down: 1}
-        self._next_direction = {right: up, up: left, left: down, down: right}
+    DIRECTIONS = (RIGHT, UP, LEFT, DOWN)
+
+    def __init__(self):
+        self.direction = RIGHT
+        self._x = {RIGHT: 1, UP: 0, LEFT: -1, DOWN: 0}
+        self._y = {RIGHT: 0, UP: -1, LEFT: 0, DOWN: 1}
 
     @property
     def x(self):
@@ -27,7 +23,8 @@ class Step:
         return self._y[self.direction]
 
     def turn(self):
-        self.direction = self._next_direction[self.direction]
+        i = (self.DIRECTIONS.index(self.direction) + 1) % len(self.DIRECTIONS)
+        self.direction = self.DIRECTIONS[i]
 
     def __repr__(self):
         return 'Step(%s)' % self.direction
@@ -42,7 +39,7 @@ class SpiralSquare:
     @property
     def table(self):
         x = y = 0
-        step = Step(Direction.RIGHT)
+        step = Step()
         index = 1
         while self.largest_x - self.smallest_x < self._side:
             self._values[(x, y)] = self._square_value(index, x, y)
