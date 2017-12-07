@@ -37,7 +37,7 @@ class Program:
         return 'Program("%s", %s, %s)' % (self.name, self.weight, self.children)
 
 
-class ProgramParser():
+class ProgramParser:
     @classmethod
     def create_programs(cls, input_rows):
         program_from_name = {
