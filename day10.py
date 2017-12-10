@@ -28,22 +28,21 @@ class HalfTwist:
 
 class HashCondenser:
     def __init__(self, sparse_hash):
-        self._sparse_hash = sparse_hash
+        self.sparse_hash = sparse_hash
 
-    def __call__(self):
-        return self.dense_hash_string(self.dense_hash(self._sparse_hash))
+    def condense(self):
+        return self._dense_hash_string(self._dense_hash())
 
-    @classmethod
-    def dense_hash(cls, sparse_hash_):
-        return [reduce(xor, sparse_hash_[i:i + 16])
-                for i in range(0, len(sparse_hash_), 16)]
-
-    @classmethod
-    def dense_hash_string(cls, dense_hash_list):
-        return ''.join(map(cls.my_hex, dense_hash_list))
+    def _dense_hash(self):
+        return [reduce(xor, self.sparse_hash[i:i + 16])
+                for i in range(0, len(self.sparse_hash), 16)]
 
     @classmethod
-    def my_hex(cls, int_):
+    def _dense_hash_string(cls, dense_hash_list):
+        return ''.join(map(cls._my_hex, dense_hash_list))
+
+    @classmethod
+    def _my_hex(cls, int_):
         s = hex(int_)[2:]
         if len(s) == 1:
             return '0' + s
@@ -54,29 +53,29 @@ class KnotHash:
     def __init__(self, inputs=None):
         self.inputs = inputs
 
-    def knot_hash(self, list_, position=0, skip=0):
+    def _single_round(self, list_, position=0, skip=0):
         for input_ in self.inputs:
             list_, position, skip = HalfTwist.tie_knot(list_, position, input_,
                                                        skip)
         return list_, position, skip
 
-    def sparse_hash(self, list_):
+    def _sparse_hash(self, list_):
         position = 0
         skip = 0
         for _ in range(64):
-            list_, position, skip = self.knot_hash(list_, position, skip)
+            list_, position, skip = self._single_round(list_, position, skip)
         return list_
 
-    def knot_hash_string(self):
+    def __str__(self):
         self.inputs = parse_input_for_part_two(self.inputs)
-        sparse_hash_ = self.sparse_hash(list(range(256)))
-        return HashCondenser(sparse_hash_)()
+        sparse_hash = self._sparse_hash(list(range(256)))
+        return HashCondenser(sparse_hash).condense()
 
 
 if __name__ == '__main__':
     list_ = list(range(256))
     knot_hash = KnotHash(INPUT_PART_1)
-    output_list, _, _ = knot_hash.knot_hash(list_)
+    output_list, _, _ = knot_hash._single_round(list_)
     print(output_list[0] * output_list[1])
 
-    print(knot_hash.knot_hash_string())
+    print(KnotHash(INPUT_STRING))

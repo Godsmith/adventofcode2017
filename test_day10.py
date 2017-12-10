@@ -25,30 +25,30 @@ class TestHalfTwist:
 
 class TestHashCondenser:
     def test_dense_hash(self):
-        hash = [65, 27, 9, 1, 4, 3, 40, 50, 91, 7, 6, 0, 2, 5, 68, 22]
-        assert HashCondenser.dense_hash(hash) == [64]
-        assert len(HashCondenser.dense_hash(range(256))) == 16
+        hash_ = [65, 27, 9, 1, 4, 3, 40, 50, 91, 7, 6, 0, 2, 5, 68, 22]
+        assert HashCondenser(hash_)._dense_hash() == [64]
+        assert len(HashCondenser(range(256))._dense_hash()) == 16
 
     def test_dense_hash_string(self):
-        assert HashCondenser.dense_hash_string([64, 7, 255]) == '4007ff'
+        assert HashCondenser._dense_hash_string([64, 7, 255]) == '4007ff'
 
     def test_my_hex(self):
-        assert HashCondenser.my_hex(64) == '40'
+        assert HashCondenser._my_hex(64) == '40'
 
-    def test_knot_hash_string(self):
-        assert KnotHash('AoC 2017').knot_hash_string() == \
+
+class TestKnotHash:
+    def test_str(self):
+        assert str(KnotHash('AoC 2017')) == \
                '33efeb34ea91902bb2f59c9920caa6cd'
-        assert KnotHash(
-            '').knot_hash_string() == 'a2582a3a0e66e6e86e3812dcb672a272'
+        assert str(KnotHash('')) == 'a2582a3a0e66e6e86e3812dcb672a272'
 
-
-@pytest.mark.parametrize('list_, inputs, output',
-                         [([0, 1, 2, 3, 4], [3], [2, 1, 0, 3, 4]),
-                          ([0, 1, 2, 3, 4], [3, 4], [4, 3, 0, 1, 2]),
-                          ([0, 1, 2, 3, 4], [3, 4, 1, 5], [3, 4, 2, 1, 0])])
-def test_knot_hash(list_, inputs, output):
-    knot_hash_list, _, _ = KnotHash(inputs).knot_hash(list_)
-    assert knot_hash_list == output
+    @pytest.mark.parametrize('list_, inputs, output',
+                             [([0, 1, 2, 3, 4], [3], [2, 1, 0, 3, 4]),
+                              ([0, 1, 2, 3, 4], [3, 4], [4, 3, 0, 1, 2]),
+                              ([0, 1, 2, 3, 4], [3, 4, 1, 5], [3, 4, 2, 1, 0])])
+    def test_knot_hash(self, list_, inputs, output):
+        knot_hash_list, _, _ = KnotHash(inputs)._single_round(list_)
+        assert knot_hash_list == output
 
 
 def test_parse_input_for_part_two():
