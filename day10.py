@@ -26,22 +26,12 @@ class HalfTwist:
         return new_list
 
 
-class KnotHash:
-    def __init__(self, inputs=None):
-        self.inputs = inputs
+class HashCondenser:
+    def __init__(self, sparse_hash):
+        self._sparse_hash = sparse_hash
 
-    def knot_hash(self, list_, position=0, skip=0):
-        for input_ in self.inputs:
-            list_, position, skip = HalfTwist.tie_knot(list_, position, input_,
-                                                       skip)
-        return list_, position, skip
-
-    def sparse_hash(self, list_):
-        position = 0
-        skip = 0
-        for _ in range(64):
-            list_, position, skip = self.knot_hash(list_, position, skip)
-        return list_
+    def __call__(self):
+        return self.dense_hash_string(self.dense_hash(self._sparse_hash))
 
     @classmethod
     def dense_hash(cls, sparse_hash_):
@@ -59,11 +49,28 @@ class KnotHash:
             return '0' + s
         return s
 
+
+class KnotHash:
+    def __init__(self, inputs=None):
+        self.inputs = inputs
+
+    def knot_hash(self, list_, position=0, skip=0):
+        for input_ in self.inputs:
+            list_, position, skip = HalfTwist.tie_knot(list_, position, input_,
+                                                       skip)
+        return list_, position, skip
+
+    def sparse_hash(self, list_):
+        position = 0
+        skip = 0
+        for _ in range(64):
+            list_, position, skip = self.knot_hash(list_, position, skip)
+        return list_
+
     def knot_hash_string(self):
         self.inputs = parse_input_for_part_two(self.inputs)
         sparse_hash_ = self.sparse_hash(list(range(256)))
-        dense_hash_ = self.dense_hash(sparse_hash_)
-        return self.dense_hash_string(dense_hash_)
+        return HashCondenser(sparse_hash_)()
 
 
 if __name__ == '__main__':
