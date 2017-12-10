@@ -1,26 +1,26 @@
 import pytest
 
-from day10 import KnotHash, parse_input_for_part_two
+from day10 import KnotHash, parse_input_for_part_two, HalfTwist
 
 
-def test_reverse_part():
-    assert KnotHash()._reverse_part([2, 1, 0, 3, 4], start=3, length=4) == \
-           [4, 3, 0, 1, 2]
+class TestHalfTwist:
+    def test_reverse_part(self):
+        assert HalfTwist._reverse_part([2, 1, 0, 3, 4], start=3, length=4) == \
+               [4, 3, 0, 1, 2]
 
-
-@pytest.mark.parametrize('list_, current_position, input_, skip, '
-                         'new_list, new_position, new_skip',
-                         [([0, 1, 2, 3, 4], 0, 3, 0,
-                           [2, 1, 0, 3, 4], 3, 1),
-                          ([2, 1, 0, 3, 4], 3, 4, 1,
-                           [4, 3, 0, 1, 2], 3, 2)])
-def test_tie_knot(list_, current_position, input_, skip, new_list,
-                  new_position, new_skip):
-    assert KnotHash(input_).tie_knot(
-        list_=list_,
-        current_position=current_position,
-        input=input_,
-        skip=skip) == (new_list, new_position, new_skip)
+    @pytest.mark.parametrize('list_, current_position, input_, skip, '
+                             'new_list, new_position, new_skip',
+                             [([0, 1, 2, 3, 4], 0, 3, 0,
+                               [2, 1, 0, 3, 4], 3, 1),
+                              ([2, 1, 0, 3, 4], 3, 4, 1,
+                               [4, 3, 0, 1, 2], 3, 2)])
+    def test_tie_knot(self, list_, current_position, input_, skip, new_list,
+                      new_position, new_skip):
+        assert HalfTwist.tie_knot(
+            list_=list_,
+            position=current_position,
+            length=input_,
+            skip=skip) == (new_list, new_position, new_skip)
 
 
 @pytest.mark.parametrize('list_, inputs, output',

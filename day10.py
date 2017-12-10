@@ -9,14 +9,11 @@ def parse_input_for_part_two(input_string):
     return list(map(ord, input_string)) + [17, 31, 73, 47, 23]
 
 
-class KnotHash:
-    def __init__(self, inputs=None):
-        self.inputs = inputs
-
+class HalfTwist:
     @classmethod
-    def tie_knot(cls, list_, current_position, input, skip):
-        new_list = cls._reverse_part(list_, current_position, input)
-        return new_list, (current_position + input + skip) % len(
+    def tie_knot(cls, list_, position, length, skip):
+        new_list = cls._reverse_part(list_, position, length)
+        return new_list, (position + length + skip) % len(
             list_), skip + 1
 
     @classmethod
@@ -28,9 +25,15 @@ class KnotHash:
             new_list[new] = list_[old]
         return new_list
 
+
+class KnotHash:
+    def __init__(self, inputs=None):
+        self.inputs = inputs
+
     def knot_hash(self, list_, position=0, skip=0):
         for input_ in self.inputs:
-            list_, position, skip = self.tie_knot(list_, position, input_, skip)
+            list_, position, skip = HalfTwist.tie_knot(list_, position, input_,
+                                                       skip)
         return list_, position, skip
 
     def sparse_hash(self, list_):
