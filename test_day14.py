@@ -1,5 +1,6 @@
 from day10 import KnotHash
-from day14 import row_strings, binary_from_hex, binary_knot_hash, used_squares
+from day14 import row_strings, binary_from_hex, binary_knot_hash, \
+    used_squares, count_regions
 
 INPUT = 'flqrgnkx'
 
@@ -27,3 +28,14 @@ def test_binary_knot_hash():
 
 def test_used_squares():
     assert used_squares(INPUT) == 8108
+
+
+def test_count_regions():
+    table = \
+        """110101
+010101
+000010
+101011
+011010
+110010"""
+    assert count_regions(table.split('\n')) == 6
