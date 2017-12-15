@@ -4,22 +4,27 @@ from util import input_rows
 class Layer:
     def __init__(self, depth, scanner_location=0, direction=1):
         self.depth = depth
-        self.scanner_location = scanner_location
+        self._scanner_location = scanner_location
         self.direction = direction
 
     def step(self):
-        self.scanner_location += self.direction
-        if not 0 <= self.scanner_location < self.depth:
+        self._scanner_location += self.direction
+        if not 0 <= self._scanner_location < self.depth:
             self.direction *= -1
-            self.scanner_location += self.direction * 2
+            self._scanner_location += self.direction * 2
+
+    def scanner_location(self, delay):
+        indices = list(range(self.depth)) + list(reversed(range(
+            self.depth)))[1:-1]
+        return indices[delay % len(indices)]
 
     def reset(self):
-        self.scanner_location = 0
+        self._scanner_location = 0
         self.direction = 1
 
     def __repr__(self):
         list_ = ['['] + ['-'] * self.depth + [']']
-        list_[self.scanner_location + 1] = 'X'
+        list_[self._scanner_location + 1] = 'X'
         return ''.join(list_)
 
 
@@ -51,7 +56,7 @@ class Layers:
         total_severity = 0
         for i in range(self.last_layer + 1):
             if i in self._dict:
-                if self._dict[i].scanner_location == 0:
+                if self._dict[i].scanner_location(delay + i) == 0:
                     total_severity += self.severity(i)
             self.step()
         return total_severity
@@ -63,7 +68,7 @@ class Layers:
 
         for i in range(self.last_layer + 1):
             if i in self._dict:
-                if self._dict[i].scanner_location == 0:
+                if self._dict[i]._scanner_location == 0:
                     return True
             self.step()
         return False

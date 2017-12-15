@@ -17,7 +17,7 @@ class TestLayers:
     def test_step(self):
         layers = Layers(INPUT)
         layers.step()
-        assert layers._dict[0].scanner_location == 1
+        assert layers._dict[0]._scanner_location == 1
 
     def test_last_layer(self):
         layers = Layers(INPUT)
@@ -42,4 +42,10 @@ class TestLayer:
         layer = Layer(3)
         for i in range(steps):
             layer.step()
-        assert layer.scanner_location == location
+        assert layer._scanner_location == location
+
+    def test_scanner_location(self):
+        layer = Layer(3)
+        assert layer.scanner_location(0) == 0
+        assert layer.scanner_location(2) == 2
+        assert layer.scanner_location(4) == 0
