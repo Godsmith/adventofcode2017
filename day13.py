@@ -49,16 +49,11 @@ class Layers:
             layer.reset()
 
     def total_severity(self, delay=0):
-        self._reset()
-        for i in range(delay):
-            self.step()
-
         total_severity = 0
         for i in range(self.last_layer + 1):
             if i in self._dict:
                 if self._dict[i].scanner_location(delay + i) == 0:
                     total_severity += self.severity(i)
-            self.step()
         return total_severity
 
     def caught(self, delay=0):
