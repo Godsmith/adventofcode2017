@@ -17,6 +17,11 @@ class Layer:
         self.scanner_location = 0
         self.direction = 1
 
+    def __repr__(self):
+        list_ = ['['] + ['-'] * self.depth + [']']
+        list_[self.scanner_location + 1] = 'X'
+        return ''.join(list_)
+
 
 class Layers:
     def __init__(self, strings):
@@ -51,18 +56,29 @@ class Layers:
             self.step()
         return total_severity
 
+    def caught(self, delay=0):
+        self._reset()
+        for i in range(delay):
+            self.step()
+
+        for i in range(self.last_layer + 1):
+            if i in self._dict:
+                if self._dict[i].scanner_location == 0:
+                    return True
+            self.step()
+        return False
+
     @classmethod
-    def first_delay_without_severity(cls, strings):
-        delay = -1
-        severity = 1
-        while severity:
-            delay += 1
+    def first_delay_without_being_caught(cls, strings):
+        delay = 0
+        while True:
             layers = Layers(strings)
-            severity = layers.total_severity(delay)
-            print(severity, delay)
+            if not layers.caught(delay):
+                break
+            delay += 1
         return delay
 
 
 if __name__ == '__main__':
-    print(Layers.total_severity(input_rows(13)))
-    print(Layers.first_delay_without_severity(input_rows(13)))
+    print(Layers(input_rows(13)).total_severity())
+    print(Layers.first_delay_without_being_caught(input_rows(13)))

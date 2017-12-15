@@ -27,12 +27,12 @@ class TestLayers:
         layers = Layers(INPUT)
         assert layers.total_severity() == 24
 
-    def test_total_severity_delay(self):
+    def test_total_severity_delay_10(self):
         layers = Layers(INPUT)
         assert layers.total_severity(delay=10) == 0
 
-    def test_first_delay_without_severity(self):
-        assert Layers.first_delay_without_severity(INPUT) == 10
+    def test_first_delay_without_being_caught(self):
+        assert Layers.first_delay_without_being_caught(INPUT) == 10
 
 
 class TestLayer:
