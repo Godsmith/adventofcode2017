@@ -4,20 +4,13 @@ from util import input_rows
 
 
 class Layer:
-    def __init__(self, depth, scanner_location=0, direction=1):
+    def __init__(self, depth):
         self.depth = depth
-        self._scanner_location = scanner_location
-        self.direction = direction
+        self._indices = list(range(depth)) + list(reversed(range(
+            depth)))[1:-1]
 
     def scanner_location(self, delay):
-        indices = list(range(self.depth)) + list(reversed(range(
-            self.depth)))[1:-1]
-        return indices[delay % len(indices)]
-
-    def __repr__(self):
-        list_ = ['['] + ['-'] * self.depth + [']']
-        list_[self._scanner_location + 1] = 'X'
-        return ''.join(list_)
+        return self._indices[delay % len(self._indices)]
 
 
 class Layers:
