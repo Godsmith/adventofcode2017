@@ -18,20 +18,14 @@ class Layers:
         self._dict = {int(s.split(': ')[0]): Layer(int(s.split(': ')[-1]))
                       for s in strings}
 
-    def severity(self, layer_index):
-        return self._dict[layer_index].depth * layer_index
-
-    @property
-    def last_layer(self):
-        return sorted(self._dict.keys())[-1]
+    def severity(self, layer_index, delay):
+        if self._dict[layer_index].scanner_location(delay + layer_index) == 0:
+            return self._dict[layer_index].depth * layer_index
+        else:
+            return 0
 
     def total_severity(self, delay=0):
-        total_severity = 0
-        for i in range(self.last_layer + 1):
-            if i in self._dict:
-                if self._dict[i].scanner_location(delay + i) == 0:
-                    total_severity += self.severity(i)
-        return total_severity
+        return sum(self.severity(i, delay) for i in self._dict)
 
     def caught(self, delay=0):
         for i in self._dict:
@@ -39,11 +33,9 @@ class Layers:
                 return True
         return False
 
-    @classmethod
-    def first_delay_without_being_caught(cls, strings):
-        layers = Layers(strings)
+    def first_delay_without_being_caught(self):
         for delay in itertools.count():
-            if not layers.caught(delay):
+            if not self.caught(delay):
                 return delay
 
 
