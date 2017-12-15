@@ -34,10 +34,9 @@ class Layers:
         return total_severity
 
     def caught(self, delay=0):
-        for i in range(self.last_layer + 1):
-            if i in self._dict:
-                if self._dict[i].scanner_location(delay + i) == 0:
-                    return True
+        for i in self._dict:
+            if self._dict[i].scanner_location(delay + i) == 0:
+                return True
         return False
 
     @classmethod
