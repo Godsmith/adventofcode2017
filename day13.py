@@ -1,3 +1,5 @@
+import itertools
+
 from util import input_rows
 
 
@@ -47,13 +49,10 @@ class Layers:
 
     @classmethod
     def first_delay_without_being_caught(cls, strings):
-        delay = 0
-        while True:
-            layers = Layers(strings)
+        layers = Layers(strings)
+        for delay in itertools.count():
             if not layers.caught(delay):
-                break
-            delay += 1
-        return delay
+                return delay
 
 
 if __name__ == '__main__':
