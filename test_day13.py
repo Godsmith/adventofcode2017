@@ -1,5 +1,3 @@
-import pytest
-
 from day13 import Layers, Layer
 
 INPUT = """0: 3
@@ -13,11 +11,6 @@ class TestLayers:
         layers = Layers(INPUT)
         assert len(layers._dict) == 4
         assert layers._dict[0].depth == 3
-
-    def test_step(self):
-        layers = Layers(INPUT)
-        layers.step()
-        assert layers._dict[0]._scanner_location == 1
 
     def test_last_layer(self):
         layers = Layers(INPUT)
@@ -36,14 +29,6 @@ class TestLayers:
 
 
 class TestLayer:
-    @pytest.mark.parametrize('steps, location',
-                             [(3, 1), (6, 2)])
-    def test_step(self, steps, location):
-        layer = Layer(3)
-        for i in range(steps):
-            layer.step()
-        assert layer._scanner_location == location
-
     def test_scanner_location(self):
         layer = Layer(3)
         assert layer.scanner_location(0) == 0
