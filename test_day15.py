@@ -1,4 +1,5 @@
-from day15 import generator_a, generator_b, last_16_bits, judge, match
+from day15 import generator_a, generator_b, judge, match, \
+    generator_a_part_2, generator_b_part_2
 
 
 def test_generator_a():
@@ -13,9 +14,13 @@ def test_generator_b():
     assert next(b) == 1233683848
 
 
-def test_last_16_bits():
-    assert last_16_bits(1092455) == '1010101101100111'
-    assert last_16_bits(1) == '0000000000000001'
+def test_generator_a_and_b_part_2():
+    a = generator_a_part_2(65)
+    b = generator_b_part_2(8921)
+    assert next(a) == 1352636452
+    assert next(b) == 1233683848
+    assert next(a) == 1992081072
+    assert next(b) == 862516352
 
 
 def test_match():
@@ -24,3 +29,5 @@ def test_match():
 
 def test_judge():
     assert judge(65, 8921, 5) == 1
+    assert judge(65, 8921, 1055, generator_a_part_2, generator_b_part_2) == 0
+    assert judge(65, 8921, 1056, generator_a_part_2, generator_b_part_2) == 1
