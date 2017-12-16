@@ -1,51 +1,53 @@
-A_START = 591
-B_START = 393
+class GeneratorFactory:
+    @staticmethod
+    def create(type, part, value):
+        def _generator_part_1(value, factor):
+            while True:
+                value = (value * factor) % 2147483647
+                yield value
+
+        def _generator_part_2(value, factor, divisor):
+            while True:
+                value = (value * factor) % 2147483647
+                if value % divisor == 0:
+                    yield value
+
+        if type == 'a':
+            factor = 16807
+            divisor = 4
+        elif type == 'b':
+            factor = 48271
+            divisor = 8
+        else:
+            raise ValueError('"type" must be "a" or "b"!')
+        if part == 1:
+            return _generator_part_1(value, factor)
+        elif part == 2:
+            return _generator_part_2(value, factor, divisor)
+        else:
+            raise ValueError('"part" must be 1 or 2!')
 
 
-def generator_a(value):
-    FACTOR = 16807
-    while True:
-        value = (value * FACTOR) % 2147483647
-        yield value
+class Judge:
+    MASK = (1 << 16) - 1
 
+    def __init__(self, gen_a, gen_b):
+        self.gen_a = gen_a
+        self.gen_b = gen_b
 
-def generator_a_part_2(value):
-    FACTOR = 16807
-    while True:
-        value = (value * FACTOR) % 2147483647
-        if value % 4 == 0:
-            yield value
+    def judge(self, iterations):
+        return sum(self._match(next(self.gen_a), next(self.gen_b))
+                   for _ in range(iterations))
 
-
-def generator_b(value):
-    FACTOR = 48271
-    while True:
-        value = (value * FACTOR) % 2147483647
-        yield value
-
-
-def generator_b_part_2(value):
-    FACTOR = 48271
-    while True:
-        value = (value * FACTOR) % 2147483647
-        if value % 8 == 0:
-            yield value
-
-
-def judge(value_a, value_b, iterations, gen_a=generator_a, gen_b=generator_b):
-    a = gen_a(value_a)
-    b = gen_b(value_b)
-    return sum(match(next(a), next(b)) for _ in range(iterations))
-
-
-MASK = (1 << 16) - 1
-
-
-def match(a, b):
-    return a & MASK == b & MASK
+    @classmethod
+    def _match(cls, a, b):
+        return a & cls.MASK == b & cls.MASK
 
 
 if __name__ == '__main__':
-    print(judge(A_START, B_START, 40000000))
-    print(judge(A_START, B_START, 5000000,
-                generator_a_part_2, generator_b_part_2))
+    A_START = 591
+    B_START = 393
+    print(Judge(GeneratorFactory.create('a', 1, A_START),
+                GeneratorFactory.create('b', 1, B_START)).judge(40000000))
+    print(Judge(GeneratorFactory.create('a', 2, A_START),
+                GeneratorFactory.create('b', 2, B_START)).judge(5000000))
