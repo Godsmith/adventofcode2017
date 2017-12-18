@@ -61,48 +61,34 @@ def dance(deque_, strings):
     return deque_
 
 
-def create_inverse_index_translation_list(before, after):
-    tuples = ((i, after.index(b))
-              for i, (b, a) in enumerate(zip(before, after)))
-    sorted_tuples = sorted(tuples, key=lambda x: x[1])
-    return [x[0] for x in sorted_tuples]
-
-
 class TranslatorFactory:
-    def __init__(self):
+    def __init__(self, iterations):
         self.translator_from_iterations = None
+        self.iterations = iterations
 
-    def create_repeated_translators(self, list_, length, iterations):
+    def create_repeated_translators(self, list_, length):
         self.translator_from_iterations = {1: Translator.from_list(list_,
                                                                    length)}
-        while self.maximum_translator_iterations() < iterations:
-            largest_translator = self.translator_from_iterations[
-                self.maximum_translator_iterations()]
-            translator, size = self.largest_translator_that_fits(iterations)
-            combined_translator = translator + largest_translator
-            self.translator_from_iterations[
-                self.maximum_translator_iterations() + size] = combined_translator
-            print(self.maximum_translator_iterations())
-        return combined_translator
+        while self._maximum_translator_iterations() < self.iterations:
+            self._create_as_large_a_translator_as_possible()
+        return self._largest_translator()
 
-    def largest_translator_that_fits(self, iterations):
+    def _create_as_large_a_translator_as_possible(self):
+        translator, size = self._largest_translator_that_fits(self.iterations)
+        combined_translator = translator + self._largest_translator()
+        self.translator_from_iterations[
+            self._maximum_translator_iterations() + size] = combined_translator
+
+    def _largest_translator_that_fits(self, iterations):
         for size in reversed(sorted(self.translator_from_iterations.keys())):
-            if self.maximum_translator_iterations() + size <= iterations:
+            if self._maximum_translator_iterations() + size <= iterations:
                 return self.translator_from_iterations[size], size
 
-    def create_translator(self, indices_after, program_swaps_after):
-        """Creates a translator function with certain properties.
+    def _largest_translator(self):
+        return self.translator_from_iterations[
+            self._maximum_translator_iterations()]
 
-        :arg indices_after:
-        :arg program_swaps_after"""
-        translations = create_inverse_index_translation_list(before, after)
-
-        def translator(list_):
-            return [list_[translations[i]] for i, _ in enumerate(list_)]
-
-        return translator
-
-    def maximum_translator_iterations(self):
+    def _maximum_translator_iterations(self):
         return max(self.translator_from_iterations)
 
 
@@ -114,17 +100,14 @@ class Translator:
         :arg program_swaps_after: Dict with program translations,
         e.g. {'a': 'e', 'b': 'd', ...}.
         """
-        self.indices_after = indices_after
+        self.index_translations = indices_after
         self.programs = {source: target for source, target in
                          zip(ascii_lowercase, program_swaps_after)}
-        # TODO: remove
-        self.index_translations = create_inverse_index_translation_list(
-            range(len(indices_after)), indices_after)
 
     def __add__(self, other):
-        new_indices_after = self._index_translate(other.indices_after)
+        new_index_translations = self._index_translate(other.index_translations)
         new_programs = self._program_swap(other.programs.values())
-        return Translator(new_indices_after, new_programs)
+        return Translator(new_index_translations, new_programs)
 
     def translate(self, list_):
         return self._index_translate(self._program_swap(list_))
@@ -149,16 +132,11 @@ class Translator:
         return cls(indices_after, program_swaps_after)
 
 
-def translate_repeatedly(f, input_, iterations):
-    for _ in range(iterations):
-        input_ = f(input_)
-    return input_
-
-
 if __name__ == '__main__':
     input_ = input_list(16)
     output = ''.join(dance(deque('abcdefghijklmnop'), input_))
     print(output)
-    translator = TranslatorFactory().create_repeated_translators(input_, 16,
-                                                                 1000000000)
+
+    translator = TranslatorFactory(1000000000).create_repeated_translators(
+        input_, 16)
     print(''.join(translator.translate('abcdefghijklmnop')))

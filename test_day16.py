@@ -1,7 +1,8 @@
 from collections import deque
 
 from day16 import spin, exchange, partner, partial_function_from_string, \
-    dance, create_inverse_index_translation_list, TranslatorFactory, Translator
+    dance, TranslatorFactory, Translator
+from util import input_list
 
 
 def test_spin():
@@ -30,14 +31,6 @@ def test_dance():
             dance(deque('abcde'), ['pe/b', 's1', 'x3/4']))
 
 
-def test_create_inverse_index_translation_list():
-    list_ = create_inverse_index_translation_list('abcde', 'edcba')
-
-    assert list_[0] == 4
-    assert list_[2] == 2
-    assert list_[4] == 0
-
-
 class TestTranslator:
     def test_from_list(self):
         translator = Translator.from_list(['pe/b', 's1', 'x3/4'], 5)
@@ -51,7 +44,13 @@ class TestTranslator:
 
 class TestTranslatorFactory:
     def test_repeated_translators_puzzle_input(self):
-        factory = TranslatorFactory()
+        factory = TranslatorFactory(2)
         translator = factory.create_repeated_translators(
-            ['pe/b', 's1', 'x3/4'], length=5, iterations=2)
+            ['pe/b', 's1', 'x3/4'], length=5)
         assert ''.join(translator.translate('abcde')) == 'ceadb'
+
+    def test_part_two(self):
+        factory = TranslatorFactory(1000000000)
+        translator = factory.create_repeated_translators(input_list(16), 16)
+        assert ''.join(
+            translator.translate('abcdefghijklmnop')) == 'hklecbpnjigoafmd'
