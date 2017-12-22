@@ -5,6 +5,7 @@ from util import input_rows
 
 class Program:
     def __init__(self, id):
+        self._id = id
         self._registers = defaultdict(lambda: 0)
         self._registers['p'] = id
         self._index = 0
@@ -12,18 +13,22 @@ class Program:
         self._peer_program = None
         self.send_count = 0
         self.waiting = False
+        self.terminated = True
 
     def peer(self, program):
         self._peer_program = program
         program._peer_program = self
 
     def send(self, value):
-        self.send_count += 1
         self._message_queue.appendleft(value)
 
-    def follow_instruction(self, string):
-        instruction, *params = string.split()
+    def follow_instruction(self, instructions):
+        if not 0 <= self._index < len(instructions):
+            self.waiting = True
+            return
+        instruction, *params = instructions[self._index].split()
         if instruction == 'snd':
+            self.send_count += 1
             self._peer_program.send(self._to_value(params[0]))
         elif instruction == 'set':
             self._registers[params[0]] = self._to_value(params[1])
@@ -55,9 +60,8 @@ class Program:
 def send_count_of_second_program_at_deadlock(programs, instructions):
     programs[0].peer(programs[1])
     while any([not p.waiting for p in programs]):
-        for instruction in instructions:
-            for p in programs:
-                p.follow_instruction(instruction)
+        for p in programs:
+            p.follow_instruction(instructions)
     return programs[1].send_count
 
 
