@@ -9,7 +9,7 @@ mul b 100
 sub b -100000
 set c b
 sub c -17000
-set f 1
+set f 0
 set d 2
 set e 2
 set e b
@@ -24,9 +24,9 @@ set g b
 sub g c
 jnz g 2
 jnz 1 3
-sub b -10
+sub b -17
 jnz 1 -16
-d""".split('\n')
+""".split('\n')
 
 
 class ExperimentalProgram(BaseProgram):
