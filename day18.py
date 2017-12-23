@@ -10,13 +10,9 @@ class SoundRecoverProgram(BaseProgram):
 
     def recovered_frequency(self, instructions):
         try:
-            self._follow_instructions(instructions)
+            self.follow_instructions(instructions)
         except FirstRcvReachedException as e:
             return e.args[0]
-
-    def _follow_instructions(self, instructions):
-        while 0 <= self._index < len(instructions):
-            self.follow_instruction(instructions)
 
     def _rcv(self, params):
         if self._break_on_first_rcv and self._to_value(params[0]) != 0:

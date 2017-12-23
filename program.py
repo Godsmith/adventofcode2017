@@ -41,6 +41,10 @@ class BaseProgram:
         except ValueError:
             return self._registers[value_or_register]
 
+    def follow_instructions(self, instructions):
+        while 0 <= self._index < len(instructions):
+            self.follow_instruction(instructions)
+
 
 class FirstRcvReachedException(Exception):
     pass
