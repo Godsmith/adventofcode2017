@@ -11,20 +11,35 @@ class BaseProgram:
         if instruction == 'snd':
             self._snd(params)
         elif instruction == 'set':
-            self._registers[params[0]] = self._to_value(params[1])
+            self._set(params)
         elif instruction == 'add':
-            self._registers[params[0]] += self._to_value(params[1])
+            self._add(params)
         elif instruction == 'mul':
-            self._registers[params[0]] *= self._to_value(params[1])
+            self._mul(params)
         elif instruction == 'mod':
-            self._registers[params[0]] %= self._to_value(params[1])
+            self._mod(params)
         elif instruction == 'rcv':
             self._rcv(params)
         elif instruction == 'jgz':
-            if self._to_value(params[0]) > 0:
-                self._index += self._to_value(params[1])
-                return
+            self._jgz(params)
         self._index += 1
+
+    def _jgz(self, params):
+        if self._to_value(params[0]) > 0:
+            self._index += self._to_value(params[1])
+            return
+
+    def _mod(self, params):
+        self._registers[params[0]] %= self._to_value(params[1])
+
+    def _mul(self, params):
+        self._registers[params[0]] *= self._to_value(params[1])
+
+    def _add(self, params):
+        self._registers[params[0]] += self._to_value(params[1])
+
+    def _set(self, params):
+        self._registers[params[0]] = self._to_value(params[1])
 
     def _snd(self, params):
         raise NotImplementedError
