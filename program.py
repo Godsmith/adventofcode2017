@@ -7,6 +7,9 @@ class BaseProgram:
         self._index = 0
 
     def follow_instruction(self, instructions):
+        print(self._index, instructions[self._index])
+        # if self._index == 11:
+        #     print(self._registers)
         instruction, *params = instructions[self._index].split()
         method = getattr(self, f'_{instruction}')
         method(params)
