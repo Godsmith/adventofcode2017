@@ -2,8 +2,7 @@ from collections import defaultdict
 
 
 class BaseProgram:
-    def __init__(self, break_on_first_rcv):
-        self._break_on_first_rcv = break_on_first_rcv
+    def __init__(self):
         self._registers = defaultdict(lambda: 0)
         self._index = 0
 

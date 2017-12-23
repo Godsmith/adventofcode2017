@@ -4,7 +4,8 @@ from util import input_lists
 
 class SoundRecoverProgram(BaseProgram):
     def __init__(self, break_on_first_rcv):
-        super().__init__(break_on_first_rcv)
+        super().__init__()
+        self._break_on_first_rcv = break_on_first_rcv
         self._most_recently_played_sound = None
 
     def recovered_frequency(self, instructions):
