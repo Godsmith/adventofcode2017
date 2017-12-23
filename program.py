@@ -35,10 +35,6 @@ class BaseProgram:
     def _rcv(self, params):
         raise NotImplementedError
 
-    def _follow_instructions(self, instructions):
-        while 0 <= self._index < len(instructions):
-            self.follow_instruction(instructions)
-
     def _to_value(self, value_or_register):
         try:
             return int(value_or_register)
