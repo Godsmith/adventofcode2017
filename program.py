@@ -14,7 +14,7 @@ class BaseProgram:
 
     def _jgz(self, params):
         if self._to_value(params[0]) > 0:
-            self._index += self._to_value(params[1])
+            self._index += self._to_value(params[1]) - 1
             return
 
     def _mod(self, params):
