@@ -8,20 +8,8 @@ class BaseProgram:
 
     def follow_instruction(self, instructions):
         instruction, *params = instructions[self._index].split()
-        if instruction == 'snd':
-            self._snd(params)
-        elif instruction == 'set':
-            self._set(params)
-        elif instruction == 'add':
-            self._add(params)
-        elif instruction == 'mul':
-            self._mul(params)
-        elif instruction == 'mod':
-            self._mod(params)
-        elif instruction == 'rcv':
-            self._rcv(params)
-        elif instruction == 'jgz':
-            self._jgz(params)
+        method = getattr(self, f'_{instruction}')
+        method(params)
         self._index += 1
 
     def _jgz(self, params):
