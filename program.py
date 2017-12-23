@@ -11,7 +11,7 @@ class BaseProgram:
         instruction, *params = list_
         print(instruction, params)
         if instruction == 'snd':
-            self._most_recently_played_sound = self._to_value(params[0])
+            self._snd(params)
         elif instruction == 'set':
             self._registers[params[0]] = self._to_value(params[1])
         elif instruction == 'add':
@@ -21,13 +21,18 @@ class BaseProgram:
         elif instruction == 'mod':
             self._registers[params[0]] %= self._to_value(params[1])
         elif instruction == 'rcv':
-            if self._break_on_first_rcv and self._to_value(params[0]) != 0:
-                raise FirstRcvReachedException(self._most_recently_played_sound)
+            self._rcv(params)
         elif instruction == 'jgz':
             if self._to_value(params[0]) > 0:
                 self._index += self._to_value(params[1])
                 return
         self._index += 1
+
+    def _snd(self, params):
+        raise NotImplementedError
+
+    def _rcv(self, params):
+        raise NotImplementedError
 
     def _follow_instructions(self, instructions):
         while 0 <= self._index < len(instructions):

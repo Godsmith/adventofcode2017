@@ -1,4 +1,4 @@
-from day18 import Program
+from day18 import SoundRecoverProgram
 
 INSTRUCTIONS = """set a 1
 add a 2
@@ -15,5 +15,5 @@ INSTRUCTIONS = [s.split() for s in INSTRUCTIONS]
 
 
 def test_recovered_frequency():
-    computer = Program(break_on_first_rcv=True)
+    computer = SoundRecoverProgram(break_on_first_rcv=True)
     assert computer.recovered_frequency(INSTRUCTIONS) == 4
