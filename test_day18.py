@@ -11,8 +11,6 @@ jgz a -1
 set a 1
 jgz a -2""".split('\n')
 
-INSTRUCTIONS = [s.split() for s in INSTRUCTIONS]
-
 
 def test_recovered_frequency():
     computer = SoundRecoverProgram(break_on_first_rcv=True)

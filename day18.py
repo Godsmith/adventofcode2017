@@ -1,5 +1,5 @@
 from program import BaseProgram, FirstRcvReachedException
-from util import input_lists
+from util import input_rows
 
 
 class SoundRecoverProgram(BaseProgram):
@@ -24,4 +24,4 @@ class SoundRecoverProgram(BaseProgram):
 
 if __name__ == '__main__':
     computer = SoundRecoverProgram(break_on_first_rcv=True)
-    print(computer.recovered_frequency(input_lists(18, delimiter=' ')))
+    print(computer.recovered_frequency(input_rows(18)))

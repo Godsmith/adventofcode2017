@@ -6,9 +6,8 @@ class BaseProgram:
         self._registers = defaultdict(lambda: 0)
         self._index = 0
 
-    def _follow_instruction(self, list_):
-        instruction, *params = list_
-        print(instruction, params)
+    def follow_instruction(self, instructions):
+        instruction, *params = instructions[self._index].split()
         if instruction == 'snd':
             self._snd(params)
         elif instruction == 'set':
@@ -35,7 +34,7 @@ class BaseProgram:
 
     def _follow_instructions(self, instructions):
         while 0 <= self._index < len(instructions):
-            self._follow_instruction(instructions[self._index])
+            self.follow_instruction(instructions)
 
     def _to_value(self, value_or_register):
         try:
