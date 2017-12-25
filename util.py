@@ -3,10 +3,13 @@
 import os
 
 
-def input_rows(day_nr):
+def input_rows(day_nr, strip=True):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     with open('%s\\inputs\\day%s.txt' % (current_dir, day_nr)) as f:
-        return list(line.strip() for line in f.readlines())
+        if strip:
+            return list(line.strip() for line in f.readlines())
+        else:
+            return list(f.readlines())
 
 
 def input_lists(day_nr, delimiter='\t'):
