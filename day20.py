@@ -95,14 +95,11 @@ class ParticleSwarm:
 
 
 class CollidingSwarm(ParticleSwarm):
-    def __init__(self, particles):
-        super().__init__(particles)
-        self._distances = self._create_distances()
-        self._last_distances = None
-
     @property
     def count_after_collisions(self):
-        while not self._scattering():
+        # Not a pretty solution, but checking if all were
+        # scattering was too slow.
+        for i in range(100):
             self._tick()
             self._remove_colliding()
         return len(self._particles)
@@ -114,41 +111,7 @@ class CollidingSwarm(ParticleSwarm):
         for _, particles in particles_from_position.items():
             if len(particles) > 1:
                 for particle in particles:
-                    self._remove_particle(particle)
-
-    def _remove_particle(self, particle):
-        index = self._particles.index(particle)
-        del self._particles[index]
-        del self._distances[index]
-        del self._last_distances[index]
-
-    def _create_distances(self):
-        return [self._calculate_distances(particle) for i, particle in
-                enumerate(self._particles)]
-
-    def _calculate_distances(self, particle):
-        return [self._distance(particle, other_particle) for other_particle in
-                self._particles]
-
-    def _scattering(self):
-        if not self._last_distances:
-            return False
-        for i, _ in enumerate(self._particles):
-            for current_distance, last_distance in zip(self._distances[i],
-                                                       self._last_distances[i]):
-                if current_distance < last_distance:
-                    return False
-        return True
-
-    @staticmethod
-    def _distance(particle1, particle2):
-        return sum(abs(v1 - v2) for v1, v2 in
-                   zip(particle1.position, particle2.position))
-
-    def _tick(self):
-        self._last_distances = self._distances
-        super()._tick()
-        self._distances = self._create_distances()
+                    self._particles.remove(particle)
 
 
 if __name__ == '__main__':

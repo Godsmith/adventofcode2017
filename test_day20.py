@@ -74,21 +74,6 @@ class TestCollidingSwarm:
         swarm._remove_colliding()
         assert len(swarm._particles) == 1
 
-    def test_distance(self):
-        particle1 = Particle.from_string(
-            'p=< 3,-3, -2>, v=< 2,0,0>, a=<-1,0,0>')
-        particle2 = Particle.from_string('p=< 3,0,-1>, v=< 2,0,0>, a=<-1,0,0>')
-        assert CollidingSwarm._distance(particle1, particle2) == 4
-
-    def test_scattering(self):
-        swarm = CollidingSwarm.from_strings(
-            ['p=< 3,1,0>, v=< 1,0,0>, a=<0,0,0>',
-             'p=< 5,0,0>, v=< -1,0,0>, a=<0,0,0>'])
-        swarm._tick()
-        assert not swarm._scattering()
-        swarm._tick()
-        assert swarm._scattering()
-
     def test_count_after_collisions(self):
         swarm = CollidingSwarm.from_strings(self.particle_strings)
         assert swarm.count_after_collisions == 1
