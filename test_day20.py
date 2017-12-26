@@ -1,4 +1,4 @@
-from day20 import Particle, ParticleSwarm
+from day20 import Particle, ParticleSwarm, CollidingSwarm
 
 
 class TestParticle:
@@ -38,12 +38,14 @@ class TestParticle:
 
 class TestParticleSwarm:
     def test_from_list(self):
-        swarm = ParticleSwarm.from_strings(['p=< 3,2,-7>, v=< 2,0,0>, a=<-1,0,0>'])
+        swarm = ParticleSwarm.from_strings(
+            ['p=< 3,2,-7>, v=< 2,0,0>, a=<-1,0,0>'])
         assert swarm._particles[0].velocity == [2, 0, 0]
 
     def test_all_moving_away_from_origin(self):
-        swarm = ParticleSwarm.from_strings(['p=< 3,0,0>, v=< 2,0,0>, a=<-1,0,0>',
-                                            'p=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>'])
+        swarm = ParticleSwarm.from_strings(
+            ['p=< 3,0,0>, v=< 2,0,0>, a=<-1,0,0>',
+             'p=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>'])
         swarm._tick()
         swarm._tick()
         assert not swarm._all_moving_away_from_origin
@@ -53,6 +55,40 @@ class TestParticleSwarm:
         assert swarm._all_moving_away_from_origin
 
     def test_index_closest_to_origin_long_term(self):
-        swarm = ParticleSwarm.from_strings(['p=< 3,0,0>, v=< 2,0,0>, a=<-1,0,0>',
-                                            'p=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>'])
+        swarm = ParticleSwarm.from_strings(
+            ['p=< 3,0,0>, v=< 2,0,0>, a=<-1,0,0>',
+             'p=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>'])
         assert swarm.index_closest_to_origin_long_term() == 0
+
+
+class TestCollidingSwarm:
+    particle_strings = """p=<-6,0,0>, v=< 3,0,0>, a=< 0,0,0>
+        p=<-4,0,0>, v=< 2,0,0>, a=< 0,0,0>
+        p=<-2,0,0>, v=< 1,0,0>, a=< 0,0,0>
+        p=< 3,0,0>, v=<-1,0,0>, a=< 0,0,0>""".split('\n')
+
+    def test_remove_colliding(self):
+        swarm = CollidingSwarm.from_strings(self.particle_strings)
+        swarm._tick()
+        swarm._tick()
+        swarm._remove_colliding()
+        assert len(swarm._particles) == 1
+
+    def test_distance(self):
+        particle1 = Particle.from_string(
+            'p=< 3,-3, -2>, v=< 2,0,0>, a=<-1,0,0>')
+        particle2 = Particle.from_string('p=< 3,0,-1>, v=< 2,0,0>, a=<-1,0,0>')
+        assert CollidingSwarm._distance(particle1, particle2) == 4
+
+    def test_scattering(self):
+        swarm = CollidingSwarm.from_strings(
+            ['p=< 3,1,0>, v=< 1,0,0>, a=<0,0,0>',
+             'p=< 5,0,0>, v=< -1,0,0>, a=<0,0,0>'])
+        swarm._tick()
+        assert not swarm._scattering()
+        swarm._tick()
+        assert swarm._scattering()
+
+    def test_count_after_collisions(self):
+        swarm = CollidingSwarm.from_strings(self.particle_strings)
+        assert swarm.count_after_collisions == 1
