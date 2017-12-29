@@ -34,12 +34,21 @@ class TestSquare:
                                        Square.from_string('.../###/###'),
                                        Square.from_string('##./##./##.')}
 
-    def test_rotations_harder(self):
-        square = Square.from_string('.#./..#/###')
-        assert square._rotations() == {square,
-                                       Square.from_string('.#./#../###'),
-                                       Square.from_string('.../###/###'),
-                                       Square.from_string('##./##./##.')}
+    def test_flip(self):
+        square = Square.from_string('#../#../...')
+        assert square._flip() == Square.from_string('..#/..#/...')
+
+    def test_rotations_and_flips(self):
+        square = Square.from_string('#../#../...')
+        assert square.rotations_and_flips() == {
+            square,
+            Square.from_string('..#/..#/...'),
+            Square.from_string('.##/.../...'),
+            Square.from_string('##./.../...'),
+            Square.from_string('.../..#/..#'),
+            Square.from_string('.../#../#..'),
+            Square.from_string('.../.../##.'),
+            Square.from_string('.../.../.##')}
 
     def test_enhance(self):
         square = Square.from_string('##/..')
@@ -53,7 +62,7 @@ class TestSquare:
 
     def test_count_pixels_on(self):
         square = Square.from_string('##/#.')
-        assert square._count_pixels_on() == 3
+        assert square.count_pixels_on() == 3
 
 
 class TestEnhancementBook:

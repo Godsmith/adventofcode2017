@@ -40,11 +40,15 @@ class Square:
                 rows.append(''.join(square.rows[row] for square in square_row))
         return cls(rows)
 
-    def _iterate(self, book):
+    def rotations_and_flips(self):
+        return self._rotations() | {square._flip() for square in
+                                    self._rotations()}
+
+    def iterate(self, book):
         return self.combine([square._enhance(book) for square in
                              self.break_up()])
 
-    def _count_pixels_on(self):
+    def count_pixels_on(self):
         return sum(row.count('#') for row in self.rows)
 
     def _square_at_position(self, size, row, column):
@@ -68,6 +72,9 @@ class Square:
         rotate2 = rotate1._rotate()
         rotate3 = rotate2._rotate()
         return {self, rotate1, rotate2, rotate3}
+
+    def _flip(self):
+        return Square([row[::-1] for row in self.rows])
 
     def _enhance(self, book):
         rotations = self._rotations()
@@ -94,7 +101,7 @@ class EnhancementBook:
             source, _, target = string.split()
             source_square = Square.from_string(source)
             target_square = Square.from_string(target)
-            for rotated_source_square in source_square._rotations():
+            for rotated_source_square in source_square.rotations_and_flips():
                 dict_[rotated_source_square] = target_square
         return EnhancementBook(dict_)
 
@@ -103,5 +110,10 @@ if __name__ == '__main__':
     book = EnhancementBook.from_strings(input_rows(21))
     square = Square.from_string('.#./..#/###')
     for _ in range(5):
-        square = square._iterate(book)
-    print(square._count_pixels_on())
+        square = square.iterate(book)
+    print(square.count_pixels_on())
+
+    square = Square.from_string('.#./..#/###')
+    for _ in range(18):
+        square = square.iterate(book)
+    print(square.count_pixels_on())
