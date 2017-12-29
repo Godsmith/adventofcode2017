@@ -28,12 +28,26 @@ class TestVirus:
             virus._turn_right()
         assert virus._position == (0, 0)
 
+    def test_example_short(self):
+        grid = Grid('..# #.. ...'.split())
+        virus = Virus(grid, (1, 1))
+        for _ in range(7):
+            virus._burst()
+        assert virus._infect_count == 5
+
     def test_example(self):
         grid = Grid('..# #.. ...'.split())
         virus = Virus(grid, (1, 1))
         for _ in range(70):
             virus._burst()
         assert virus._infect_count == 41
+
+    def test_example_long(self):
+        grid = Grid('..# #.. ...'.split())
+        virus = Virus(grid, (1, 1))
+        for _ in range(10000):
+            virus._burst()
+        assert virus._infect_count == 5587
 
 
 class TestGrid:

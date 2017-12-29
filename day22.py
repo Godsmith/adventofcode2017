@@ -1,3 +1,8 @@
+from collections import defaultdict
+
+from util import input_rows
+
+
 class Virus:
     UP = 0
     RIGHT = 1
@@ -13,10 +18,10 @@ class Virus:
 
     def _burst(self):
         if self._is_current_node_infected():
-            self._turn_left()
+            self._turn_right()
             self._clean()
         else:
-            self._turn_right()
+            self._turn_left()
             self._infect()
         self._move_forward()
 
@@ -52,13 +57,40 @@ class Virus:
 
 class Grid:
     def __init__(self, strings):
-        self._table = [list(string) for string in strings]
+        self._dict = defaultdict(lambda: False)
+        for y, row in enumerate(strings):
+            for x, character in enumerate(row):
+                self._dict[(x, y)] = (character == '#')
 
     def infected(self, position):
-        return self._table[position[1]][position[0]] == '#'
+        return self._dict[position]
 
     def infect(self, position):
-        self._table[position[1]][position[0]] = '#'
+        self._dict[position] = True
 
     def clean(self, position):
-        self._table[position[1]][position[0]] = '.'
+        self._dict[position] = False
+
+    def __str__(self):
+        output = []
+        first_row = min(self._dict.keys(), key=lambda x: x[1])[1]
+        last_row = max(self._dict.keys(), key=lambda x: x[1])[1]
+        first_column = min(self._dict.keys(), key=lambda x: x[0])[0]
+        last_column = max(self._dict.keys(), key=lambda x: x[0])[0]
+        for y in range(first_row, last_row + 1):
+            current_string = ''
+            for x in range(first_column, last_column + 1):
+                if self._dict[(x, y)]:
+                    current_string += '# '
+                else:
+                    current_string += '. '
+            output.append(current_string)
+        return '\n'.join(output)
+
+
+if __name__ == '__main__':
+    grid = Grid(input_rows(22))
+    virus = Virus(grid, (12, 12))
+    for _ in range(10000):
+        virus._burst()
+    print(virus._infect_count)
