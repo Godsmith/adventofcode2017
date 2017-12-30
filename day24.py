@@ -78,22 +78,21 @@ class Bridge:
         components = list(map(Component.from_string, strings))
         return Bridge._all_bridges_from_components(components)
 
+    def filter_compatible(self, components):
+        return [component for component in components
+                if self.compatible(component)]
+
     @classmethod
     def _all_bridges_from_components(cls, components_left, bridge=None):
-        print(bridge)
         if not bridge:
             bridge = Bridge()
-            bridges = []
         else:
-            bridges = [bridge]
-        for component in components_left:
-            if bridge.compatible(component):
-                new_bridge = bridge.add(component)
-                new_components_left = list(components_left)
-                new_components_left.remove(component)
-                bridges.extend(cls._all_bridges_from_components(
-                    new_components_left, new_bridge))
-        return bridges
+            yield bridge
+        for component in bridge.filter_compatible(components_left):
+            new_components_left = [c for c in components_left
+                                   if not c is component]
+            yield from cls._all_bridges_from_components(
+                new_components_left, bridge.add(component))
 
     @classmethod
     def strongest_bridge_from_component_strings(cls, strings):

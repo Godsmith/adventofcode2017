@@ -41,7 +41,7 @@ class TestBridge:
 
 class TestAllBridgesFromComponents:
     def test_empty(self):
-        assert Bridge._all_bridges_from_components([]) == []
+        assert list(Bridge._all_bridges_from_components([])) == []
 
     def test_single(self):
         assert set(map(str, Bridge._all_bridges_from_components([
