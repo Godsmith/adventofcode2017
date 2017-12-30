@@ -53,6 +53,9 @@ class Bridge:
     def strength(self):
         return sum(c.strength for c in self.components)
 
+    def __len__(self):
+        return len(self.components)
+
     @property
     def port(self):
         if not self.components:
@@ -99,6 +102,15 @@ class Bridge:
         return max(b.strength for b in cls.all_bridges_from_component_strings(
             strings))
 
+    @classmethod
+    def strength_of_longest_bridge(cls, strings):
+        bridges = list(cls.all_bridges_from_component_strings(strings))
+        max_length = len(max(bridges, key=lambda x: len(x)))
+        max_length_bridges = [bridge for bridge in bridges
+                              if len(bridge) == max_length]
+        return max(max_length_bridges, key=lambda x: x.strength).strength
+
 
 if __name__ == '__main__':
     print(Bridge.strongest_bridge_from_component_strings(input_rows(24)))
+    print(Bridge.strength_of_longest_bridge(input_rows(24)))

@@ -69,3 +69,8 @@ class TestStrongestBridgeFromComponentsStrings:
     def test_strongest_bridge_from_components_strings(self):
         assert Bridge.strongest_bridge_from_component_strings(
             COMPONENT_STRINGS) == 31
+
+
+class TestStrengthOfLongestBridge:
+    def test_example(self):
+        assert Bridge.strength_of_longest_bridge(COMPONENT_STRINGS) == 19
